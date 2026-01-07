@@ -31,7 +31,7 @@ export default defineConfig([
       'import/no-extraneous-dependencies': [
         'error',
         {
-          devDependencies: ['eslint.config.mjs', '**/*.spec.ts', '**/tests/*.ts'],
+          devDependencies: ['vite.config.mjs', 'eslint.config.mjs', '**/*.spec.ts', '**/tests/*.ts'],
           includeInternal: true,
         },
       ],
