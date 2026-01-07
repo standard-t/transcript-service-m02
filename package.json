@@ -4,7 +4,8 @@
   "description": "Transcript Service",
   "main": "index.js",
   "type": "module",
-  "scripts": {    "lint": "eslint .",
+  "scripts": {    
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.ts",
     "test": "vitest run --coverage",
