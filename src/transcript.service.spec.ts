@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TranscriptDB, type TranscriptService } from './transcript.service.ts';
+import type { Course, CourseGrade, Student, Transcript } from './types.ts';
 
 let db: TranscriptService;
 beforeEach(() => {
@@ -28,6 +29,61 @@ describe('addStudent', () => {
     const id2 = db.addStudent('blair');
     expect(id1).not.toEqual(id2);
   });
+});
+
+describe('addGrade', () => {
+  it('should throw an error if the given student does not exist', () => {
+    // assemble 
+    const psych: Course = 'Psychology';
+    const psychGrade: CourseGrade = { course: psych, grade: 95 };
+    // act and assert
+    expect(() => db.addGrade(1, psych, psychGrade)).toThrowError();
+  });
+
+
+  it('should add a courseGrade to the database for the given student and course', () => {
+    // assemble 
+    const biology: Course = 'Biology';
+    const bioGrade: CourseGrade = { course: biology, grade: 88 };
+    const id1 = db.addStudent('Ruby');
+
+    // act
+    db.addGrade(id1, biology, bioGrade);
+
+    // assert
+    expect(db.getGrade(id1, biology)).toStrictEqual(bioGrade);
+  });
+
+  it('should overwrite an existing grade for the given student and course', () => {
+    // assemble 
+    const chemistry: Course = 'Chemistry';
+    const chemGrade1: CourseGrade = { course: chemistry, grade: 65 };
+    const chemGrade2: CourseGrade = { course: chemistry, grade: 85 };
+    const id2 = db.addStudent('Sam');
+
+    // act
+    db.addGrade(id2, chemistry, chemGrade1);
+    db.addGrade(id2, chemistry, chemGrade2);
+
+    // assert
+    expect(db.getGrade(id2, chemistry)).toStrictEqual(chemGrade2);
+  });
+
+  it('should add the new CourseGrade to the corresponding students transcript', () => {
+    // assemble 
+    const history: Course = 'History';
+    const historyGrade: CourseGrade = { course: history, grade: 99 };
+    const id3 = db.addStudent('Leah');
+    const leah: Student = { studentID: id3, studentName: 'Leah' };
+    const leahTranscript: Transcript = { student: leah, grades: [historyGrade] }
+    // act 
+    db.addGrade(id3, history, historyGrade);
+    // assess 
+    expect(db.getTranscript(id3)).toStrictEqual(leahTranscript);
+  })
+
+
+
 });
 
 describe('getTranscript', () => {
